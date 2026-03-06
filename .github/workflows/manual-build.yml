@@ -1,0 +1,32 @@
+name: Manual Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: '要编译的分支或 Tag'
+        required: true
+        default: 'main'
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      # 根据项目实际情况配置环境，例如 Node.js 或 Python
+      # - name: Setup Node.js
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: '20'
+
+      - name: Build
+        run: |
+          echo "正在编译分支/Tag: ${{ inputs.ref }}"
+          # 在此处添加具体的编译命令，例如：
+          # npm ci
+          # npm run build
