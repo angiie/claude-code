@@ -11,12 +11,24 @@ on:
 
 jobs:
   build:
+    name: Build (${{ matrix.platform }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+
+      # 配置 QEMU 以支持跨平台构建（针对 linux/arm64）
+      - name: Set up QEMU
+        if: matrix.platform == 'linux/arm64'
+        uses: docker/setup-qemu-action@v3
 
       # 根据项目实际情况配置环境，例如 Node.js 或 Python
       # - name: Setup Node.js
@@ -27,6 +39,7 @@ jobs:
       - name: Build
         run: |
           echo "正在编译分支/Tag: ${{ inputs.ref }}"
+          echo "目标平台: ${{ matrix.platform }}"
           # 在此处添加具体的编译命令，例如：
           # npm ci
           # npm run build
